@@ -49,7 +49,7 @@ async function gptrequest(chatId) {
 const app = express();
 app.use(express.json())
 
-const port = 3000;
+const port = 443;
 
 const fs = require('fs'); // include the filesystem module
 
