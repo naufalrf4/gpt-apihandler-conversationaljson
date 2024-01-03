@@ -1,0 +1,16 @@
+{
+  "name": "gpt-api-coversationalchain-via-nodejs",
+  "version": "1.0.0",
+  "description": "GPT handler with json conversational chain via nodejs api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "ekkymulia",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "openai": "^4.24.1"
+  }
+}
