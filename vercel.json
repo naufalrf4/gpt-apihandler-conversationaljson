@@ -1,9 +1,15 @@
 {
     "version": 2,
-    "functions": {
-      "api/index.js": {
-        "runtime": "nodejs14.x",
-        "includeFiles": "dist/**"
+    "builds": [
+      {
+        "src": "index.js",
+        "use": "@now/node"
       }
-    }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "index.js"
+      }
+    ]
   }
