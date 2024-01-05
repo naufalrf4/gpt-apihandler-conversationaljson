@@ -8,7 +8,7 @@ const openai = new OpenAI({
 });
 
 async function gptrequest(chatId) {
-    const chatsData = fs.readFileSync('chats.json');
+    const chatsData = fs.readFileSync('public/chats.json');
     let chats = [];
     try {
         // Parse existing JSON data from chats.json
@@ -45,7 +45,7 @@ const model = process.env.OPENAI_MODEL
     };
 
     chats.push(newChat);
-    fs.writeFileSync('chats.json', JSON.stringify(chats, null, 2));
+    fs.writeFileSync('public/chats.json', JSON.stringify(chats, null, 2));
 
     return response.choices[0].message.content;
 }
@@ -71,7 +71,22 @@ app.post('/', (req, res) => {
 
     const chatId = body.chatId;
     // Read chats.json file synchronously
-    const chatsData = fs.readFileSync('chats.json');
+    // const chatsData = fs.readFileSync('public/chats.json');
+    try {
+        // Try reading the file
+        chatsData = fs.readFileSync('public/chats.json', 'utf8');
+    } catch (err) {
+        if (err.code === 'ENOENT') {
+            // If the file doesn't exist, create it with an empty array
+            fs.writeFileSync('public/chats.json', '[]');
+            chatsData = '[]'; // Set initial data as an empty array
+        } else {
+            // Handle other potential errors
+            console.error('Error reading the file:', err);
+        }
+    }
+
+      
     let chats = [];
     try {
         // Parse existing JSON data from chats.json
@@ -90,7 +105,7 @@ app.post('/', (req, res) => {
         content: body.message
     };
     chats.push(newChat);
-    fs.writeFileSync('chats.json', JSON.stringify(chats, null, 2));
+    fs.writeFileSync('public/chats.json', JSON.stringify(chats, null, 2));
 
     conversations.push(newChat.chat);
 
@@ -105,8 +120,8 @@ app.post('/', (req, res) => {
 });
 
 
-// app.listen(port, () => {
-//   console.log(`Server is running on port ${port}`);
+// app.listen(process.env.SERVER_PORT, () => {
+//   console.log(`Server is running on port ${process.env.SERVER_PORT}`);
 // });
 
-export default app;
+module.exports = app;
