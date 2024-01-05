@@ -124,4 +124,4 @@ app.post('/', (req, res) => {
 //   console.log(`Server is running on port ${process.env.SERVER_PORT}`);
 // });
 
-module.exports = app;
+export default app;
