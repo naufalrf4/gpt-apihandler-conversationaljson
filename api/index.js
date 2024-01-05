@@ -53,7 +53,7 @@ const model = process.env.OPENAI_MODEL
 const app = express();
 app.use(express.json())
 
-const port = process.env.SERVER_PORT;
+// const port = process.env.SERVER_PORT;
 
 const fs = require('fs'); // include the filesystem module
 
@@ -105,7 +105,7 @@ app.post('/', (req, res) => {
 });
 
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
-
+// app.listen(port, () => {
+//   console.log(`Server is running on port ${port}`);
+// });
+module.exports = app;
