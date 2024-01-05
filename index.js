@@ -1,5 +1,7 @@
 const OpenAI = require('openai');
 const express = require('express');
+const cors = require('cors');
+
 
 const openai = new OpenAI({
     apiKey: "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",
@@ -52,6 +54,8 @@ app.use(express.json())
 const port = 443;
 
 const fs = require('fs'); // include the filesystem module
+
+app.use(cors())
 
 app.post('/', (req, res) => {
     
