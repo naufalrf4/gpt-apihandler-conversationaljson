@@ -1,10 +1,10 @@
 const OpenAI = require('openai');
 const express = require('express');
 const cors = require('cors');
-
+require('dotenv').config();
 
 const openai = new OpenAI({
-    apiKey: "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",
+    apiKey: process.env.OPENAI_API_KEY,
 });
 
 async function gptrequest(chatId) {
@@ -28,8 +28,10 @@ async function gptrequest(chatId) {
     );
     console.log('conversations', conversations);
 
+const model = process.env.OPENAI_MODEL
+
     const response = await openai.chat.completions.create({
-        model: "ft:gpt-3.5-turbo-1106:personal::8ccVBO02",
+        model: model,
         messages: conversations,
         // stream: true,
     });
@@ -51,7 +53,7 @@ async function gptrequest(chatId) {
 const app = express();
 app.use(express.json())
 
-const port = 443;
+const port = process.env.SERVER_PORT;
 
 const fs = require('fs'); // include the filesystem module
 

@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "chatId": 2,
+    "role": "user",
+    "content": "babi"
+  },
+  {
+    "chatId": 2,
+    "role": "assistant",
+    "content": "Salam. Sebagai umat Muslim, kita diajarkan untuk menggunakan kata-kata yang sopan. Mari kita saling menghormati dalam berkomunikasi. \n"
+  }
+]
