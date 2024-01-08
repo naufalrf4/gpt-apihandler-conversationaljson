@@ -31,7 +31,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.post("/", async (req, res) => {
+app.get("/", (req, res) => {
+  res.send("Halo nama saya Naufal Rizqullah Firdaus!");
+});
+
+app.post("/gpt", async (req, res) => {
   const body = req.body;
 
   if (!body || !body.chatId || !body.message) {
@@ -52,11 +56,11 @@ app.post("/", async (req, res) => {
 });
 
 // Enable this for local deployment
-// const port = process.env.SERVER_PORT;
+const port = process.env.SERVER_PORT;
 
-// app.listen(port, () => {
-//   console.log(`Server is running on port ${port}`);
-// });
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
 
 // Enable this for serverless deployment
-export default app;
+// export default app;
