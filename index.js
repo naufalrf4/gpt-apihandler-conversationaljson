@@ -7,61 +7,27 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-async function gptrequest(chatId) {
-    const chatsData = fs.readFileSync('public/chats.json');
-    let chats = [];
-    try {
-        // Parse existing JSON data from chats.json
-        chats = JSON.parse(chatsData);
-    } catch (error) {
-        console.error('Error parsing chats.json:', error);
-        res.status(500).send('Error parsing conversational chain');
-    }
-
+async function gptrequest(chatId, userMessage) {
     const conversations = [
-        { role : "system", content: "kamu adalah seorang chatbot penasehat agama islam, kamu membantu user dengan menjawab pertanyaannya berdasarkan referensi dari ayat ayat alquran, kamu menjawab user pertama dengan mengucap kata kata salam atau umpatan baik yang ada pada agama islam di setiap response, kemudian menjawab pendapat kamu sebagai penasehat agama islam dan terakhir dibawahnya selalu sertakan referensi surah berapa dan ayat berapa atau hadits yang berkaitan!. Sebagai penasihat agama islam, janganlah menjawab hal diluar bidang kamu, dan gunakan tutur kata yang baik, sopan dan islami. !PENTING! selalu gunakan riwayat konversasi ini sebagai referensi untuk menjawab user selanjutnya."}
-    ]
+        { role: "system", content: "kamu adalah seorang chatbot penasehat agama islam, ..." },
+        { role: "user", content: userMessage },
+    ];
 
-    conversations.push(...chats
-        .filter(chat => chat.chatId === chatId)
-        .map(chat => ({ role: chat.role, content: chat.content }))
-    );
-    console.log('conversations', conversations);
-
-const model = process.env.OPENAI_MODEL
+    const model = process.env.OPENAI_MODEL;
 
     const response = await openai.chat.completions.create({
         model: model,
         messages: conversations,
-        // stream: true,
     });
-    console.log('response', response)
-    console.log('response data', response.data)
-
-    const newChat = {
-        chatId: chatId,
-        role: "assistant",
-        content: response.choices[0].message.content
-    };
-
-    chats.push(newChat);
-    fs.writeFileSync('public/chats.json', JSON.stringify(chats, null, 2));
 
     return response.choices[0].message.content;
 }
 
 const app = express();
-app.use(express.json())
+app.use(express.json());
+app.use(cors());
 
-// const port = process.env.SERVER_PORT;
-
-const fs = require('fs'); // include the filesystem module
-
-app.use(cors())
-
-app.post('/', (req, res) => {
-    
-    console.log(req.body)
+app.post('/', async (req, res) => {
     const body = req.body;
 
     if (!body || !body.chatId || !body.message) {
@@ -70,58 +36,19 @@ app.post('/', (req, res) => {
     }
 
     const chatId = body.chatId;
-    // Read chats.json file synchronously
-    // const chatsData = fs.readFileSync('public/chats.json');
-    try {
-        // Try reading the file
-        chatsData = fs.readFileSync('public/chats.json', 'utf8');
-    } catch (err) {
-        if (err.code === 'ENOENT') {
-            // If the file doesn't exist, create it with an empty array
-            fs.writeFileSync('public/chats.json', '[]');
-            chatsData = '[]'; // Set initial data as an empty array
-        } else {
-            // Handle other potential errors
-            console.error('Error reading the file:', err);
-        }
-    }
+    const userMessage = body.message;
 
-      
-    let chats = [];
-    try {
-        // Parse existing JSON data from chats.json
-        chats = JSON.parse(chatsData);
-    } catch (error) {
-        console.error('Error parsing chats.json:', error);
-    }
+    const response = await gptrequest(chatId, userMessage);
+    
+    console.log('ChatId:', chatId);
+    console.log('User Message:', userMessage);
+    console.log('OpenAI Response:', response);
 
-    // Find chats with the given chatId
-    const matchingChats = chats.filter(chat => chat.chatId === chatId);
-    let conversations = [];
-
-    const newChat = {
-        chatId: chatId,
-        role: "user",
-        content: body.message
-    };
-    chats.push(newChat);
-    fs.writeFileSync('public/chats.json', JSON.stringify(chats, null, 2));
-
-    conversations.push(newChat.chat);
-
-    const response = gptrequest(chatId)
-    .then(response => {
-        console.log('reresponse', response)
-        res.json(response);
-    })
-    // console.log('reresponse', response)
-    // await res.json(response);
-
+    res.json({ content: response });
 });
 
+const port = process.env.PORT;
 
-// app.listen(process.env.SERVER_PORT, () => {
-//   console.log(`Server is running on port ${process.env.SERVER_PORT}`);
-// });
-
-export default app;
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
