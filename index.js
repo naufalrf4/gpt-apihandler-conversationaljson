@@ -51,10 +51,12 @@ app.post("/", async (req, res) => {
   res.json({ content: response });
 });
 
+// Enable this for local deployment
 // const port = process.env.SERVER_PORT;
 
 // app.listen(port, () => {
 //   console.log(`Server is running on port ${port}`);
 // });
 
+// Enable this for serverless deployment
 export default app;
