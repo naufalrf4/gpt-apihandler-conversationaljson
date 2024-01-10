@@ -56,11 +56,11 @@ app.post("/chat", async (req, res) => {
 });
 
 // Enable this for local deployment
-// const port = process.env.SERVER_PORT;
+const port = process.env.SERVER_PORT;
 
-// app.listen(port, () => {
-//   console.log(`Server is running on port ${port}`);
-// });
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
 
 // Enable this for serverless deployment
-export default app;
+// export default app;
